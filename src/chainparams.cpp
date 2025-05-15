@@ -67,7 +67,9 @@ public:
         consensus.signet_blocks = false;
         consensus.signet_challenge.clear();
         consensus.BIP16Exception = uint256S("0x0");
-
+        // aux
+        consensus.nAuxpowChainId = 0x1e;
+        consensus.fStrictChainId = true;   
         // BIP34, BIP65 and BIP66, CSV and Segwit were activated simultaneously
         // DEPLOYMENT_NVERSIONBIPS, DEPLOYMENT_CSV, DEPLOYMENT_SEGWIT        
         consensus.BIP34Hash = uint256S("0xadd8ca420f557f62377ec2be6e6f47b96cf2e68160d58aeb7b73433de834cca0");
@@ -284,7 +286,10 @@ public:
         consensus.nSubsidyHalvingInterval = 300;
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60; // two weeks
         consensus.nPowTargetSpacing = 60 / 4;
-
+        // aux
+        consensus.nAuxpowChainId = 0x1e;
+        consensus.fStrictChainId = true;
+        
         consensus.BIP16Exception = uint256();
         consensus.BIP34Height = 500; // BIP34 activated on regtest (Used in functional tests)
         consensus.BIP34Hash = uint256();
@@ -579,6 +584,9 @@ public:
         consensus.signet_challenge.clear();
         consensus.nSubsidyHalvingInterval = 300;
         consensus.BIP16Exception = uint256();
+        // aux 
+        consensus.nAuxpowChainId = 0x1e;
+        consensus.fStrictChainId = true;
         consensus.BIP34Height = 500; // BIP34 activated on regtest (Used in functional tests)
         consensus.BIP34Hash = uint256();
         consensus.BIP65Height = 1351; // BIP65 activated on regtest (Used in functional tests)

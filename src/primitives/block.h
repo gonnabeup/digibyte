@@ -10,6 +10,7 @@
 #include <primitives/transaction.h>
 #include <serialize.h>
 #include <uint256.h>
+#include <auxpow.h>
 
 namespace Consensus { struct Params; }
 
@@ -98,8 +99,19 @@ public:
         SetNull();
     }
 
-    SERIALIZE_METHODS(CBlockHeader, obj) { READWRITE(obj.nVersion, obj.hashPrevBlock, obj.hashMerkleRoot, obj.nTime, obj.nBits, obj.nNonce); }
-
+    SERIALIZE_METHODS(CBlockHeader, obj) { READWRITE(obj.nVersion, obj.hashPrevBlock, obj.hashMerkleRoot, obj.nTime, obj.nBits, obj.nNonce); // aux  
+         if (obj.IsAuxpow())
+        {
+            SER_READ(obj, obj.auxpow = std::make_shared<CAuxPow>());
+            assert(obj.auxpow != nullptr);
+            READWRITE(*obj.auxpow);
+        } else
+        {
+            SER_READ(obj, obj.auxpow.reset());
+        } 
+    }
+    
+    
     void SetNull()
     {
         nVersion = 0;
@@ -108,8 +120,12 @@ public:
         nTime = 0;
         nBits = 0;
         nNonce = 0;
+        //aux
+        auxpow.reset();
     }
 
+    void SetAuxpow (std::unique_ptr<CAuxPow> apow);
+    
     bool IsNull() const
     {
         return (nBits == 0);
@@ -131,6 +147,9 @@ public:
     {
         return (int64_t)nTime;
     }
+
+    // aux
+
 };
 
 
@@ -147,11 +166,12 @@ public:
     {
         SetNull();
     }
-
+    
     CBlock(const CBlockHeader &header)
     {
         SetNull();
         *(static_cast<CBlockHeader*>(this)) = header;
+        
     }
 
     SERIALIZE_METHODS(CBlock, obj)
@@ -176,6 +196,7 @@ public:
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
+        block.auxpow         = auxpow;
         return block;
     }
 

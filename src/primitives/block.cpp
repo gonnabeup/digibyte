@@ -17,6 +17,18 @@
 #include <tinyformat.h>
 #include <arith_uint256.h>
 
+void CBlockHeader::SetAuxpow (std::unique_ptr<CAuxPow> apow)
+{
+    if (apow != nullptr)
+    {
+        auxpow.reset(apow.release());
+        SetAuxpowVersion(true);
+    } else
+    {
+        auxpow.reset();
+        SetAuxpowVersion(false);
+    }
+}
 uint256 CBlockHeader::GetHash() const
 {
     return SerializeHash(*this);
